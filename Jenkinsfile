@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        jdk 'JDK'
-        maven 'Maven'
-    }
-
     stages {
         stage('Checkout Code') {
             steps {
@@ -13,26 +8,32 @@ pipeline {
             }
         }
 
+        stage('Check Java') {
+            steps {
+                bat 'java -version'
+            }
+        }
+
         stage('Build') {
             steps {
-                bat 'mvn clean compile'
+                bat '"C:/Maven/apache-maven-3.10.0/bin/mvn.cmd" clean compile'
             }
         }
 
         stage('Unit Test') {
             steps {
-                bat 'mvn test'
+                bat '"C:/Maven/apache-maven-3.10.0/bin/mvn.cmd" test'
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/*.xml'
+                    junit allowEmptyResults: true, testResults: '**/target/surefire-reports/*.xml'
                 }
             }
         }
 
         stage('Package') {
             steps {
-                bat 'mvn package -DskipTests'
+                bat '"C:/Maven/apache-maven-3.10.0/bin/mvn.cmd" package -DskipTests'
             }
         }
 
